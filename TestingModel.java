@@ -38,6 +38,10 @@ public class TestingModel {
 
     public int getAccuracy(){
         System.out.println("TESTING SIZE: " + testingSet.getEmails().size());
+        System.out.println("TRUE POSITIVES" + truePositives);
+        System.out.println("TRUE negatives" + trueNegatives);
+        System.out.println("false negatives" + falseNegatives);
+        System.out.println("false postives" + falsePositives);
         return trueNegatives+truePositives;
     }
 }

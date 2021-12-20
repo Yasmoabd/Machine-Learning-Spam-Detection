@@ -44,11 +44,11 @@ public class Dataset {
             for(String word: wordsInEmail){
                 String result = word.replaceAll("\\p{Punct}", "");
                 if(result.trim().isEmpty()==false){
-                    words.add(result);
+                    words.add(stemmer.stem(result));
                 }
             }
         }
-        
+        words.removeAll(stopWords);
     }
 
     public void loadAllEmails() throws CsvValidationException, IOException{
@@ -79,9 +79,10 @@ public class Dataset {
         for(String word: wordsInEmail){
             String result = word.replaceAll("\\p{Punct}", "");
             if(result.trim().isEmpty()==false){
-                cleanWords.add(result);
+                cleanWords.add(stemmer.stem(result));
             }
         }
+        cleanWords.removeAll(stopWords);
         return cleanWords;
     }
 

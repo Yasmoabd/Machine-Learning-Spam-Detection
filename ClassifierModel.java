@@ -43,7 +43,7 @@ public class ClassifierModel {
     public void buildHamVocabulary(){
         for(String word: hamDataset.getWords()){
             if(hamVocabulary.containsKey(word)){
-                int oldVal = spamVocabulary.get(word);
+                int oldVal = hamVocabulary.get(word);
                 hamVocabulary.put(word, oldVal+1);
             }
             else{
@@ -94,7 +94,7 @@ public class ClassifierModel {
             int occurences = spamVocabulary.get(word);
             return occurences/(double)totalSpamWords;
         }
-        return alpha/(double)totalSpamWords;
+        return 1;
     }
 
     private double pWordInHam(String word){
@@ -103,7 +103,7 @@ public class ClassifierModel {
             int occurences = hamVocabulary.get(word);
             return occurences/(double)totalHamWords;
         }
-        return alpha/(double)totalHamWords;
+        return 1;
     }
 
     public Dataset getSpamDataset(){
