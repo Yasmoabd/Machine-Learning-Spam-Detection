@@ -89,26 +89,36 @@ public class ClassifierModel {
     }
 
     private double pWordInSpam(String word){
+        int totalSpamWords = spamDataset.getNumberofWords();
         if(spamVocabulary.containsKey(word)){
             int occurences = spamVocabulary.get(word);
-            int totalSpamWords = spamDataset.getNumberofWords();
             return occurences/(double)totalSpamWords;
         }
-        return 1;
+        return alpha/(double)totalSpamWords;
     }
 
     private double pWordInHam(String word){
+        int totalHamWords = hamDataset.getNumberofWords();
         if(hamVocabulary.containsKey(word)){
             int occurences = hamVocabulary.get(word);
-            int totalHamWords = hamDataset.getNumberofWords();
             return occurences/(double)totalHamWords;
         }
-        return 1;
+        return alpha/(double)totalHamWords;
+    }
+
+    public Dataset getSpamDataset(){
+        return spamDataset;
+    }
+
+    public Dataset getHamDataset(){
+        return hamDataset;
     }
 
     public static void main(String[] args) throws CsvValidationException, IOException {
         ClassifierModel cm = new ClassifierModel();
-        TestingDataset td = new TestingDataset(cm.spamDataset, cm.hamDataset);
+        TestingModel tm = new TestingModel(cm);
+        tm.test();
+        System.out.println(tm.getAccuracy());
     }
     
 

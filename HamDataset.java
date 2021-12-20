@@ -8,7 +8,7 @@ public class HamDataset extends Dataset {
 
     public HamDataset() throws CsvValidationException, IOException{
         super();
-        datatsetSize=2720;
+        datatsetSize=3548;
         build();
     }
 

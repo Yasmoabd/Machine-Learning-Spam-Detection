@@ -9,7 +9,7 @@ public class SpamDataset extends Dataset {
 
     public SpamDataset() throws IOException, CsvValidationException {
         super();
-        datatsetSize = 1330;
+        datatsetSize = 1731;
         build();
     }
 

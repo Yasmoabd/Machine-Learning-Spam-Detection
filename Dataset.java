@@ -18,6 +18,10 @@ public class Dataset {
     private ArrayList<String> hamEmails;
 
     private static List<String> stopWords;
+    //total 5780
+    //3884 ham
+    //1896 spam
+
 
     //2720 for ham
     //1330 for spam
@@ -40,11 +44,11 @@ public class Dataset {
             for(String word: wordsInEmail){
                 String result = word.replaceAll("\\p{Punct}", "");
                 if(result.trim().isEmpty()==false){
-                    words.add(stemmer.stem(result));
+                    words.add(result);
                 }
             }
         }
-        words.removeAll(stopWords);
+        
     }
 
     public void loadAllEmails() throws CsvValidationException, IOException{
@@ -75,10 +79,9 @@ public class Dataset {
         for(String word: wordsInEmail){
             String result = word.replaceAll("\\p{Punct}", "");
             if(result.trim().isEmpty()==false){
-                cleanWords.add(stemmer.stem(result));
+                cleanWords.add(result);
             }
         }
-        cleanWords.removeAll(stopWords);
         return cleanWords;
     }
 

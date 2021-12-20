@@ -28,5 +28,9 @@ public class TestingDataset {
             testingEmails.add(t);
         }
     }
+
+    public ArrayList<TestingInstance> getEmails(){
+        return testingEmails;
+    }
     
 }
