@@ -64,8 +64,22 @@ public class Dataset {
                 csvEntry=csvr.readNext();
             }
         } catch (Exception e) {
-            System.out.println(73763763);
+            return;
         } 
+    }
+
+    public static ArrayList<String> cleanEmail(String email){
+        PorterStemmer stemmer = new PorterStemmer();
+        ArrayList<String> cleanWords = new ArrayList<>();
+        String[] wordsInEmail = email.trim().split("\\s+");
+        for(String word: wordsInEmail){
+            String result = word.replaceAll("\\p{Punct}", "");
+            if(result.trim().isEmpty()==false){
+                cleanWords.add(stemmer.stem(result));
+            }
+        }
+        cleanWords.removeAll(stopWords);
+        return cleanWords;
     }
 
     public int getNumberOfEmails(){
@@ -82,6 +96,10 @@ public class Dataset {
 
     public ArrayList<String> getSpamEmails(){
         return spamEmails;
+    }
+
+    public ArrayList<String> getWords(){
+        return words;
     }
 
     public void setEmails(ArrayList<String> emls){

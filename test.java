@@ -12,7 +12,7 @@ public class test {
             System.out.println(s);
         }
         PorterStemmer s = new PorterStemmer();
-        System.out.println(s.stem("walks"));
+        System.out.println(s.stem("buy"));
        
     }
 }
