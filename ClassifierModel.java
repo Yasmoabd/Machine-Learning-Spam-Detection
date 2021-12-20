@@ -108,7 +108,7 @@ public class ClassifierModel {
 
     public static void main(String[] args) throws CsvValidationException, IOException {
         ClassifierModel cm = new ClassifierModel();
-        System.out.println(cm.classify("essay due tommorow"));
+        TestingDataset td = new TestingDataset(cm.spamDataset, cm.hamDataset);
     }
     
 
