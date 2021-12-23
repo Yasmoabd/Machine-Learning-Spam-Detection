@@ -62,8 +62,8 @@ public class ClassifierModel {
         double ham = pHam();
 
         for(String word: wordsInEmail){
-            double spamProbability = pWordInSpam(word);
-            double hamProbability = pWordInHam(word);
+            double spamProbability = pWordInSpam(word)*1000;
+            double hamProbability = pWordInHam(word)*1000;
 
             spam*=spamProbability;
             ham*=hamProbability;
@@ -116,8 +116,10 @@ public class ClassifierModel {
 
     public static void main(String[] args) throws CsvValidationException, IOException {
         ClassifierModel cm = new ClassifierModel();
+        System.out.println(cm.classify("exam on tuesday cancelled"));
         TestingModel tm = new TestingModel(cm);
         tm.test();
+        tm.PrintResults();
         System.out.println(tm.getAccuracy());
     }
     

@@ -24,6 +24,9 @@ import java.security.GeneralSecurityException;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.google.api.client.util.StringUtils;
 
 import java.util.*;
@@ -64,6 +67,46 @@ public class GmailAPI {
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
+    public static String fetchNewEmail() throws GeneralSecurityException, IOException, InterruptedException{
+        final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+        Gmail service = new Gmail.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
+                .setApplicationName(APPLICATION_NAME)
+                .build();
+        String user = "me";
+        Gmail.Users.Messages.List request = service.users().messages().list(user).setIncludeSpamTrash(true);
+        ListMessagesResponse mesres = request.execute();
+        String initialID = mesres.getMessages().get(0).getId();
+        String messageID = initialID;
+        String subject = "";
+        Message message = service.users().messages().get(user, messageID).execute();
+        if(message.getPayload().getParts()==null){
+            System.out.println("faulty");
+            String emailbody = StringUtils.newStringUtf8(com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64.decodeBase64(message.getPayload().toString()));
+            final Pattern TAG_REGEX = Pattern.compile("<p class=MsoNormal>(.+?)</p>", Pattern.DOTALL);
+            final List<String> tagValues = new ArrayList<String>();
+            final Matcher matcher = TAG_REGEX.matcher(emailbody);
+            String answer="";
+            while (matcher.find()) {
+                if(!matcher.group(1).equals("<o:p>&nbsp;</o:p>")){
+                    answer+= matcher.group(1)+"\n";
+                }
+            }
+            return answer;
+        }
+        else{
+            String emailbody = StringUtils.newStringUtf8(com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64.decodeBase64(message.getPayload().getParts().get(0).getBody().getData()));
+            for(int i = 0;i<message.getPayload().getHeaders().size();i++){
+                MessagePartHeader s = message.getPayload().getHeaders().get(i);
+                if(s.getName().equals("Subject")){
+                    subject = s.getValue();
+                }
+            
+            }
+            return subject + "EmailSplit" + emailbody;
+        }
+        
+    }
+
     public static void main(String... args) throws IOException, GeneralSecurityException {
         // Build a new authorized API client service.
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
@@ -83,10 +126,23 @@ public class GmailAPI {
                 System.out.printf("- %s\n", label.getName());
             }
         }
-        Gmail.Users.Messages.List request = service.users().messages().list(user).setIncludeSpamTrash(true).setQ("yasirmabdullah1@hotmail.com");
+        Gmail.Users.Messages.List request = service.users().messages().list(user).setIncludeSpamTrash(true);
         ListMessagesResponse mesres = request.execute();
         String messageID = mesres.getMessages().get(0).getId();
         Message message = service.users().messages().get(user, messageID).execute();
+        if(message.getPayload().getParts()==null){
+            String emailbody = StringUtils.newStringUtf8(com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64.decodeBase64(message.getPayload().toString()));
+            final Pattern TAG_REGEX = Pattern.compile("<p class=MsoNormal>(.+?)</p>", Pattern.DOTALL);
+            final List<String> tagValues = new ArrayList<String>();
+            final Matcher matcher = TAG_REGEX.matcher(emailbody);
+            String answer="";
+            while (matcher.find()) {
+                if(!matcher.group(1).equals("<o:p>&nbsp;</o:p>")){
+                    System.out.println(matcher.group(1));
+                }
+                
+            }
+        }
         String emailbody = StringUtils.newStringUtf8(com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64.decodeBase64(message.getPayload().getParts().get(0).getBody().getData()));
         for(int i = 0;i<message.getPayload().getHeaders().size();i++){
             MessagePartHeader s = message.getPayload().getHeaders().get(i);

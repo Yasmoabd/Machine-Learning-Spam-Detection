@@ -1,18 +1,14 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Scanner;
 import opennlp.tools.stemmer.PorterStemmer;
 
 public class test {
     
-    public static void main(String[] args) throws FileNotFoundException {
-        String testemail = "hello   my name is  yasir";
-        String[] testwords = testemail.trim().split("\\s+");
-        for(String s: testwords){
-            System.out.println(s);
-        }
-        PorterStemmer s = new PorterStemmer();
-        System.out.println(s.stem("buy"));
+    public static void main(String[] args) throws GeneralSecurityException, IOException, InterruptedException {
+        GmailAPI.fetchNewEmail();
        
     }
 }

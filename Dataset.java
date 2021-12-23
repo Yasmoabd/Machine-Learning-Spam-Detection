@@ -22,7 +22,6 @@ public class Dataset {
     //3884 ham
     //1896 spam
 
-
     //2720 for ham
     //1330 for spam
 
@@ -44,7 +43,7 @@ public class Dataset {
             for(String word: wordsInEmail){
                 String result = word.replaceAll("\\p{Punct}", "");
                 if(result.trim().isEmpty()==false){
-                    words.add(stemmer.stem(result));
+                    words.add(stemmer.stem(result).toLowerCase());
                 }
             }
         }
@@ -79,7 +78,7 @@ public class Dataset {
         for(String word: wordsInEmail){
             String result = word.replaceAll("\\p{Punct}", "");
             if(result.trim().isEmpty()==false){
-                cleanWords.add(stemmer.stem(result));
+                cleanWords.add(stemmer.stem(result).toLowerCase());
             }
         }
         cleanWords.removeAll(stopWords);
