@@ -57,7 +57,7 @@ public class ClassifierModel {
     
     public boolean classify(String email){
         ArrayList<String> wordsInEmail = Dataset.cleanEmail(email);
-
+        
         double spam = pSpam();
         double ham = pHam();
 

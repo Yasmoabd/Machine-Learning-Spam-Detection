@@ -42,6 +42,15 @@ public class Controller {
         return resultString;
     }
 
+    public String classify(String email){
+        
+        boolean result = classifierModel.classify(email);
+        if(result){
+            return "Spam";
+        }
+        return "Not spam";
+    }
+
     public static void main(String[] args) throws GeneralSecurityException, IOException, InterruptedException {
         GmailAPI.fetchNewEmail();
     }

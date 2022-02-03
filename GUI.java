@@ -16,6 +16,7 @@ public class GUI {
     private JButton[] buttons = new JButton[4];
     private JLabel statusLabel;
     private Controller controller;
+    private boolean pasted;
     JPanel statusJPanel;
 
 
@@ -30,14 +31,19 @@ public class GUI {
         addTextPanel();
         addStatusPane();
         myFrame.setVisible(true);
+        myFrame.getContentPane().setBackground(new Color(102,105,99));
+        pasted = false;
     }
 
     public void addStatusPane(){
         JPanel statusPanel = new JPanel();
+        
         statusJPanel=statusPanel;
+        statusPanel.setBackground(new Color(61,84,103));
         statusPanel.setLayout(new FlowLayout());
         statusPanel.setBounds(120, 420, 800, 50);
         JLabel l = new JLabel("Press Build Model to begin");
+        l.setBackground(new Color(61,84,103));
         statusLabel = l;
         statusPanel.add(l);
         myFrame.add(statusPanel);
@@ -48,6 +54,7 @@ public class GUI {
         bottomPanel.setLayout(new FlowLayout());
         bottomPanel.setBounds(120, 10, 800, 400);
         JTextArea textArea = new JTextArea("hello world!");
+        textArea.setBackground(new Color(138,162,158));
         textField = textArea;
         JScrollPane pane = new JScrollPane(textField,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         pane.setPreferredSize(new Dimension(800,400));
@@ -62,6 +69,7 @@ public class GUI {
 
     public void addLeftPanel(){
         JPanel leftPanel = new JPanel();
+        leftPanel.setBackground(new Color(61,84,103));
         GridLayout layout = new GridLayout(0,1);
         layout.setVgap(50);
         
@@ -87,6 +95,7 @@ public class GUI {
                 } catch (CsvValidationException | IOException e1) {
                     e1.printStackTrace();
                 }
+                buttons[3].setEnabled(true);
                 statusLabel.setText("Press Input email to continue");
                 makeNextButtonPressable(0);
             }
@@ -101,18 +110,29 @@ public class GUI {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                statusLabel.setText("Press Done when you have sent the email.");
+                statusLabel.setText("Press Paste to paste text or Forward if you would like to forward.");
                 clearTextField();
-                updateTextField("Please Forward email to machinelearningspamdetector@gmail.com");
+                String inputInstruction = "Please Forward email to machinelearningspamdetector@gmail.com OR paste text into textbox.";
+                updateTextField(inputInstruction);
+            
+                JButton forwardButton = new JButton("Forward");
                 JButton sentButton = new JButton("Done");
+                sentButton.setVisible(false);
+                JButton pasteButton = new JButton("Paste");
+
                 statusJPanel.add(sentButton);
+                statusJPanel.add(pasteButton);
+                statusJPanel.add(forwardButton);
+
                 sentButton.addActionListener(new ActionListener(){
 
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         try {
-                            clearTextField();
-                            updateTextField(controller.getNewEmail());
+                            if(pasted==false){
+                                clearTextField();
+                                updateTextField(controller.getNewEmail());
+                            }
                             sentButton.setVisible(false);
                             statusLabel.setText("Press Classify email to continue.");
                             makeNextButtonPressable(1);
@@ -120,6 +140,33 @@ public class GUI {
                         } catch (GeneralSecurityException | IOException | InterruptedException e1) {
                             e1.printStackTrace();
                         }
+                        
+                    }
+                    
+                });
+
+                pasteButton.addActionListener(new ActionListener(){
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        textField.setEditable(true);
+                        forwardButton.setVisible(false);
+                        pasteButton.setVisible(false);
+                        sentButton.setVisible(true);
+                        statusLabel.setText("Please paste text into texbox");
+                        pasted=true;
+                    }
+                    
+                });
+
+                forwardButton.addActionListener(new ActionListener(){
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        pasteButton.setVisible(false);
+                        forwardButton.setVisible(false);
+                        sentButton.setVisible(true);
+                        statusLabel.setText("Please Forward the email to machinelearningspamdetector@gmail.com");
                         
                     }
                     
@@ -134,8 +181,34 @@ public class GUI {
         JButton b3 = new JButton("Classify email");
         buttons[2] = b3;
         b3.setEnabled(false);
+        b3.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String result = controller.classify(textField.getText());
+                textField.setEditable(false);
+                clearTextField();
+                updateTextField(result);
+                makeNextButtonPressable(2);
+            }
+            
+        });
+        
         JButton b4 = new JButton("Restart");
+        b4.setEnabled(false);
         buttons[3] = b4;
+        b4.addActionListener(new ActionListener(){
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                statusLabel.setText("Press Input email to continue");
+                buttons[1].setBackground(null);
+                buttons[2].setBackground(null);
+                makeNextButtonPressable(0);
+                pasted = false;
+            }
+            
+        });
 
         leftPanel.add(b1);
         leftPanel.add(b2);
@@ -173,6 +246,7 @@ public class GUI {
 
     public void makeNextButtonPressable(int buttonPressed){
         buttons[buttonPressed].setEnabled(false);
+        buttons[buttonPressed].setBackground(Color.GREEN);
         buttons[buttonPressed+1].setEnabled(true);
     }
     
