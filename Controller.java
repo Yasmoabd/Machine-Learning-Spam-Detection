@@ -14,6 +14,8 @@ public class Controller {
         gui = g;
     }
 
+    public Controller(GUIV2 G){}
+
     public ArrayList<String> buildClassiferModel() throws CsvValidationException, IOException{
         classifierModel = new ClassifierModel();
         TestingModel tm = new TestingModel(classifierModel);
@@ -25,6 +27,14 @@ public class Controller {
             resultString.add(key+": "+Double.toString(result.get(key)));
         }
         return resultString;
+    }
+
+    public HashMap<String,Double> getMappedResults() throws CsvValidationException, IOException{
+        classifierModel = new ClassifierModel();
+        TestingModel tm = new TestingModel(classifierModel);
+        testingModel = tm;
+        tm.test();
+        return tm.getResults();
     }
 
     public HashMap<String,Integer> getConfusionMatrix(){
