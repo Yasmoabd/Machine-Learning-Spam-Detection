@@ -282,6 +282,7 @@ public class GUIV2 extends javax.swing.JFrame {
     private void buildButtonActionPerformed(java.awt.event.ActionEvent evt) throws CsvValidationException, IOException {                                            
         long startTime = System.currentTimeMillis();
         HashMap<String,Double> results = controller.getMappedResults();
+        HashMap<String,Integer> confResults = controller.getConfusionMatrix();
         long duration = (System.currentTimeMillis()-startTime);
         timeLabel.setText("Build Time: " + duration);
         accLabel.setText("Accuracy: " + results.get("Acurracy"));
@@ -289,6 +290,15 @@ public class GUIV2 extends javax.swing.JFrame {
         recLabel.setText("Recall: " + results.get("Recall"));
         specLabel.setText("Specificity: " + results.get("Specificity"));
         f1Label.setText("F1-Score: " + results.get("F1-Score"));
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {"Predicted Spam", confResults.get("True Positives"), confResults.get("False Negatives")},
+                {"Predicted Ham", confResults.get("False Positives"), confResults.get("True Negatives")}
+            },
+            new String [] {
+                "", "Actual Spam", "Actual Ham"
+            }
+        ));
         classifyButton.setEnabled(true);
     }                                           
 
